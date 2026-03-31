@@ -1,7 +1,12 @@
+import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { codeExamples } from "../data/CodeExamples";
+import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const Hero = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [activeTab, setActiveTab] = useState("App.jsx");
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -39,6 +44,51 @@ const Hero = () => {
                 <span className="text-xs sm:text-sm text-gray-300">
                   CodeFlow AI
                 </span>
+              </div>
+              <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
+            </div>
+
+            <div className="p-3 sm:p-4 relative h-full">
+              {/* File Tabs */}
+              <div className="flex space-x-1 sm:space-x-2 mb-3 sm:mb-4 overflow-x-auto">
+                <button
+                  className={`px-3 py-2 backdrop-blur-sm text-xs sm:text-sm rounded-t-lg border ${activeTab === "App.jsx" ? "bg-blue-500/30 text-white border-blue-400/20" : "bg-white/5 text-gray-300 border-white/10 hover:bg-white/10"}  transition-all duration-200 whitespace-nowrap`}
+                  onClick={() => setActiveTab("App.jsx")}
+                >
+                  App.jsx
+                </button>
+                <button
+                  className={`px-3 py-2 backdrop-blur-sm text-xs sm:text-sm rounded-t-lg border ${activeTab === "Hero.jsx" ? "bg-blue-500/30 text-white border-blue-400/20" : "bg-white/5 text-gray-300 border-white/10 hover:bg-white/10"}  transition-all duration-200 whitespace-nowrap`}
+                  onClick={() => setActiveTab("Hero.jsx")}
+                >
+                  Hero.jsx
+                </button>
+                <button
+                  className={`px-3 py-2 backdrop-blur-sm text-xs sm:text-sm rounded-t-lg border ${activeTab === "Navbar.jsx" ? "bg-blue-500/30 text-white border-blue-400/20" : "bg-white/5 text-gray-300 border-white/10 hover:bg-white/10"}  transition-all duration-200 whitespace-nowrap`}
+                  onClick={() => setActiveTab("Navbar.jsx")}
+                >
+                  Navbar.jsx
+                </button>
+              </div>
+
+              {/* Code Content */}
+              <div className="relative overflow-hidden grow">
+                <SyntaxHighlighter
+                  language="jsx"
+                  w
+                  className="h-full rounded-lg"
+                  style={nightOwl}
+                  customStyle={{
+                    margin: 0,
+                    borderRadius: "8px",
+                    fontSize: "11px",
+                    lineHeight: "1.4",
+                    height: "100%",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                  }}
+                >
+                  {codeExamples[activeTab]}
+                </SyntaxHighlighter>
               </div>
             </div>
           </div>
