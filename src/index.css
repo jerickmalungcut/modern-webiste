@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+/* ================================
+   COMPONENT STYLES (Reusable UI)
+================================ */
+@layer components {
+  /* 🔹 Navbar Links */
+  .nav-link {
+    @apply text-gray-300 hover:text-white text-sm lg:text-base transition-colors duration-200;
+  }
+
+  .mobile-nav-link {
+    @apply block text-gray-300 hover:text-white text-sm lg:text-base transition-colors duration-200;
+  }
+}
+
+/* ================================
+   CUSTOM UTILITIES (Low-level)
+================================ */
 @layer utilities {
   .animate-in {
     animation-fill-mode: both;
@@ -13,10 +30,17 @@
     animation-name: slideInFromBottom;
   }
 
-  .duration-300 {
-    animation-duration: 300ms;
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
   }
 }
+
+/* ================================
+   KEYFRAMES
+================================ */
 
 @keyframes slideInFromBottom {
   from {

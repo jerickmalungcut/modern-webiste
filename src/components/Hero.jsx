@@ -1,154 +1,186 @@
 import { ArrowRight, ChevronDown, Play, Sparkles } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { codeExamples, floatingCards } from "../data/CodeExamples";
 import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism";
 
+/**
+ * Hero Component
+ * ---------------------------------------
+ * - Landing section with headline + CTA
+ * - Interactive code preview with tabs
+ * - Mouse-based radial gradient effect
+ */
 const Hero = () => {
+  // 🔹 Track mouse position for background effect
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // 🔹 Active tab for code preview
   const [activeTab, setActiveTab] = useState("App.jsx");
 
+  /**
+   * 🔹 Optimize mouse move listener
+   * Prevent excessive re-renders using requestAnimationFrame
+   */
   useEffect(() => {
+    let frameId;
+
     const handleMouseMove = (event) => {
-      setMousePosition({ x: event.clientX, y: event.clientY });
+      frameId = requestAnimationFrame(() => {
+        setMousePosition({ x: event.clientX, y: event.clientY });
+      });
     };
+
     window.addEventListener("mousemove", handleMouseMove);
 
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(frameId);
+    };
   }, []);
 
-  const currentFloatingCard = floatingCards[activeTab];
+  /**
+   * 🔹 Memoize floating card (performance optimization)
+   */
+  const currentFloatingCard = useMemo(
+    () => floatingCards[activeTab],
+    [activeTab],
+  );
 
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-16 sm:pt-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Mouse Hover Effect */}
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.15), transparent 40%)`,
-        }}
-      ></div>
-      {/* Background Pulse Effect */}
-      <div className="absolute top-20 left-4 sm:left-10 w-48 sm:w-72 h-48 sm:h-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 right-4 sm:right-10 w-64 sm:w-96 h-64 sm:h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      {/* ================================
+          BACKGROUND EFFECTS
+      ================================= */}
 
-      <div className="max-w-7xl w-full mx-auto text-center lg:text-left relative">
-        <div className="relative max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
-          <div className="">
-            <div className="inline-flex items-center space-x-2 px-3 sm:px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-4 sm:mb-6 animate-in slide-in-from-bottom duration-700">
+      {/* 🔹 Mouse radial gradient */}
+      <div
+        className="absolute inset-0 opacity-30 pointer-events-none"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59,130,246,0.15), transparent 40%)`,
+        }}
+      />
+
+      {/* 🔹 Decorative blurred blobs */}
+      <div className="absolute top-20 left-4 sm:left-10 w-48 sm:w-72 h-48 sm:h-72 bg-blue-500/30 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-4 sm:right-10 w-64 sm:w-96 h-64 sm:h-96 bg-cyan-500/30 rounded-full blur-3xl animate-pulse delay-1000" />
+
+      {/* ================================
+          MAIN CONTENT
+      ================================= */}
+
+      <div className="max-w-7xl w-full mx-auto relative">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          {/* ================================
+              LEFT CONTENT (TEXT)
+          ================================= */}
+
+          <div className="text-center lg:text-left">
+            {/* 🔹 Badge */}
+            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-6 animate-in slide-in-from-bottom duration-700">
               <Sparkles className="w-4 h-4 text-blue-400" />
-              <span className="text-xs sm:text-sm text-blue-300">
-                Introducing CodeFlow AI
+              <span className="text-sm text-blue-300">
+                Introducing BuildFlow AI
               </span>
             </div>
 
-            <h1 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold mb-4 sm:mb-6 animate-in slide-in-from-bottom duration-700 delay-100 leading-tight">
-              <span className="bg-linear-to-r from-white via-blue-100 to-cyan-100 bg-clip-text text-transparent block mb-1 sm:mb-2">
-                Code Faster
+            {/* 🔹 Main Heading (SEO important: use ONE h1) */}
+            <h1 className="text-4xl md:text-5xl xl:text-6xl font-semibold mb-6 leading-tight animate-in slide-in-from-bottom duration-700 delay-100">
+              <span className="block text-transparent bg-clip-text bg-linear-to-r from-white via-blue-100 to-cyan-100">
+                Build Smarter
               </span>
-              <span className="bg-linear-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent block mb-1 sm:mb-2">
-                Build Better
+              <span className="block text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-cyan-400 to-blue-400">
+                Ship Faster
               </span>
-              <span className="bg-linear-to-r from-white via-blue-100 to-cyan-100 bg-clip-text text-transparent block mb-1 sm:mb-2">
-                With CodeFlow AI
+              <span className="block text-transparent bg-clip-text bg-linear-to-r from-white via-blue-100 to-cyan-100">
+                With AI Assistance
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base lg:text-lg text-gray-400 max-w-2xl mx-auto lg:mx-0 mb-6 sm:mb-8 animate-in slide-in-from-bottom duration-700 delay-200 leading-relaxed">
-              Accelerate your development workflow with intelligent code
-              completion, automated testing, and smart debugging. Ship
-              production-ready code 10x faster.
+            {/* 🔹 Description */}
+            <p className="text-base lg:text-lg text-gray-400 max-w-xl mx-auto lg:mx-0 mb-8 animate-in slide-in-from-bottom duration-700 delay-200">
+              Supercharge your development workflow with intelligent code
+              suggestions, real-time debugging insights, and automated best
+              practices.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start  gap-3 sm:gap-4 mb-8 sm:mb-12 animate-in slide-in-from-bottom duration-700 delay-300">
-              <button className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-b from-blue-600 to-blue-400 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105 flex items-center justify-center space-x-2">
-                <span>Start Coding Free</span>
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-300" />
+            {/* 🔹 CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-in slide-in-from-bottom duration-700 delay-300">
+              {/* Primary CTA */}
+              <button className="group px-6 py-3 bg-linear-to-b from-blue-600 to-blue-400 rounded-lg font-semibold flex items-center justify-center gap-2 hover:scale-105 transition">
+                <span>Get Started for Free</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
               </button>
 
-              <button className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 hover:bg-white/10 flex items-center justify-center space-x-2">
-                <div className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 duration-300 transition-colors ">
-                  <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-white" />
+              {/* Secondary CTA */}
+              <button className="group px-6 py-3 bg-white/5 border border-white/10 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-white/10 transition">
+                <div className="p-2 bg-white/10 rounded-full group-hover:bg-white/20">
+                  <Play className="w-4 h-4 fill-white" />
                 </div>
-                <span>Watch Demo</span>
+                <span>See How It Works</span>
               </button>
             </div>
           </div>
 
-          <div className="relative order-2 w-full">
-            <div className="relative bg-white/5 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-2xl border border-white/10">
-              <div className="bg-linear-to-br from-gray-900/20 to-gray-800/20 backdrop-blur-sm rounded-lg overflow-hidden h-70 sm:h-87.5 lg:h-122.5  border border-white/5">
-                {/* IDE HEADER */}
-                <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 bg-white/5 backdrop-blur-sm border-b border-white/10">
-                  {/* IDE Title */}
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-1 sm:space-x-2">
-                      <div className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-red-500"></div>
-                      <div className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-yellow-500"></div>
-                      <div className="w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-green-500"></div>
-                    </div>
-                    <span className="text-xs sm:text-sm text-gray-300">
-                      CodeFlow AI
-                    </span>
-                  </div>
-                  <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
-                </div>
+          {/* ================================
+              RIGHT CONTENT (CODE PREVIEW)
+          ================================= */}
 
-                <div className="p-3 sm:p-4 relative h-full">
-                  {/* File Tabs */}
-                  <div className="flex space-x-1 sm:space-x-2 mb-3 sm:mb-4 overflow-x-auto">
-                    <button
-                      className={`px-3 py-2 backdrop-blur-sm text-xs sm:text-sm rounded-t-lg border ${activeTab === "App.jsx" ? "bg-blue-500/30 text-white border-blue-400/20" : "bg-white/5 text-gray-300 border-white/10 hover:bg-white/10"}  transition-all duration-200 whitespace-nowrap`}
-                      onClick={() => setActiveTab("App.jsx")}
-                    >
-                      App.jsx
-                    </button>
-                    <button
-                      className={`px-3 py-2 backdrop-blur-sm text-xs sm:text-sm rounded-t-lg border ${activeTab === "Hero.jsx" ? "bg-blue-500/30 text-white border-blue-400/20" : "bg-white/5 text-gray-300 border-white/10 hover:bg-white/10"}  transition-all duration-200 whitespace-nowrap`}
-                      onClick={() => setActiveTab("Hero.jsx")}
-                    >
-                      Hero.jsx
-                    </button>
-                    <button
-                      className={`px-3 py-2 backdrop-blur-sm text-xs sm:text-sm rounded-t-lg border ${activeTab === "Navbar.jsx" ? "bg-blue-500/30 text-white border-blue-400/20" : "bg-white/5 text-gray-300 border-white/10 hover:bg-white/10"}  transition-all duration-200 whitespace-nowrap`}
-                      onClick={() => setActiveTab("Navbar.jsx")}
-                    >
-                      Navbar.jsx
-                    </button>
+          <div className="w-full">
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl">
+              {/* 🔹 IDE HEADER */}
+              <div className="flex justify-between items-center px-4 py-3 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <span className="w-3 h-3 rounded-full bg-red-500" />
+                    <span className="w-3 h-3 rounded-full bg-yellow-500" />
+                    <span className="w-3 h-3 rounded-full bg-green-500" />
                   </div>
-
-                  {/* Code Content */}
-                  <div className="relative overflow-hidden grow">
-                    <SyntaxHighlighter
-                      language="jsx"
-                      w
-                      className="h-full rounded-lg"
-                      style={nightOwl}
-                      customStyle={{
-                        margin: 0,
-                        borderRadius: "8px",
-                        fontSize: "11px",
-                        lineHeight: "1.4",
-                        height: "100%",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        wordWrap: "break-word",
-                        whiteSpace: "pre-wrap",
-                        textAlign: "left",
-                      }}
-                    >
-                      {codeExamples[activeTab]}
-                    </SyntaxHighlighter>
-                  </div>
+                  <span className="text-sm text-gray-300">CodeFlow AI</span>
                 </div>
+                <ChevronDown className="w-4 h-4 text-gray-400" />
               </div>
 
-              {/* Floating Cards */}
+              {/* 🔹 Tabs */}
+              <div className="flex gap-2 p-3 overflow-x-auto">
+                {Object.keys(codeExamples).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-3 py-2 text-sm rounded-t-lg border ${
+                      activeTab === tab
+                        ? "bg-blue-500/30 text-white"
+                        : "text-gray-300 hover:bg-white/10"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+
+              {/* 🔹 Code Viewer */}
+              <div className="relative h-75 overflow-auto rounded-lg border border-white/10 no-scrollbar">
+                <SyntaxHighlighter
+                  language="jsx"
+                  style={nightOwl}
+                  customStyle={{
+                    margin: 0,
+                    fontSize: "11px",
+                    lineHeight: "1.4",
+                    background: "transparent",
+                  }}
+                >
+                  {codeExamples[activeTab]}
+                </SyntaxHighlighter>
+              </div>
+
+              {/* 🔹 Floating Card */}
               <div
-                className={`hidden lg:block absolute bottom-4 right-4 transform translate-x-8 translate-y-8 w-72 backdrop-blur-xl rounded-lg p-4 border border-white/20 shadow-2xl ${floatingCards[activeTab].bgColor}`}
+                className={`hidden lg:block absolute bottom-4 right-4 w-72 p-4 rounded-lg backdrop-blur-xl border border-white/20 shadow-xl ${currentFloatingCard.bgColor}`}
               >
-                <div className="flex items-center space-x-2 mb-2">
+                <div className="flex items-center gap-2 mb-2">
                   <div
-                    className={`w-6 h-6 ${currentFloatingCard.iconColor} flex items-center justify-center text-sm font-bold`}
+                    className={`w-6 h-6 flex items-center justify-center ${currentFloatingCard.iconColor}`}
                   >
                     {currentFloatingCard.icon}
                   </div>
@@ -158,12 +190,9 @@ const Hero = () => {
                     {currentFloatingCard.title}
                   </span>
                 </div>
-
-                <div
-                  className={`text-sm text-left ${currentFloatingCard.contentColor}`}
-                >
+                <p className={`text-sm ${currentFloatingCard.contentColor}`}>
                   {currentFloatingCard.content}
-                </div>
+                </p>
               </div>
             </div>
           </div>

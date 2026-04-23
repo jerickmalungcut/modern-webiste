@@ -1,6 +1,6 @@
 export const codeExamples = {
   "App.jsx": `import { useState } from "react";
-import { CodeFlow } from "@codeflow/ai";
+import { BuildFlow } from "@buildflow/ai";
 
 function App() {
   const [code, setCode] = useState("");
@@ -20,7 +20,7 @@ function App() {
   );
 }`,
   "Hero.jsx": `import { useState, useEffect } from "react";
-import { CodeFlow } from "@codeflow/ai";
+import { BuildFlow } from "@buildflow/ai";
 
 export default function Hero() {
   const [isTyping, setIsTyping] = useState(false);
@@ -33,7 +33,7 @@ export default function Hero() {
   }, []);
 
   const handleAISuggestion = async () => {
-    const suggestion = await CodeFlow.suggest("hero component");
+    const suggestion = await BuildFlow.suggest("hero component");
     return suggestion;
   };
 
